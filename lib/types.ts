@@ -32,6 +32,7 @@ export type MarshalMarshalObject = {
 export type MarshalUserObject = {
   __class: symbol;
   __load: Buffer;
+  __encoding?: BufferEncoding;
 };
 
 export type MarshalStructObject = {

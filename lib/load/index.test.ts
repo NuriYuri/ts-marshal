@@ -128,6 +128,7 @@ describe('Marshal', () => {
       expect(load(Buffer.from('040849753a0f446174614f626a65637413536f6d6542696e61727944617461063a064554', 'hex'))).toEqual({
         __class: Symbol.for('DataObject'),
         __load: Buffer.from('SomeBinaryData', 'utf8'),
+        __encoding: 'utf8',
       });
     });
 
