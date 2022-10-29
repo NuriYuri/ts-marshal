@@ -1,4 +1,4 @@
-import { load } from './Marshal';
+import { load } from '.';
 
 // Marshal.dump().each_byte.map { |i| sprintf('%02x', i) }.join
 describe('Marshal', () => {
@@ -67,6 +67,28 @@ describe('Marshal', () => {
       });
     });
 
+    it('loads hashes with instance variables', () => {
+      expect(load(Buffer.from('0408497b073a0661690049220662063a0645546906063a074061690a', 'hex'))).toEqual({
+        __class: 'Hash',
+        [Symbol.for('a')]: 0,
+        b: 1,
+        '@a': 5,
+      });
+    });
+
+    it('loads extended hashes', () => {
+      expect(load(Buffer.from('0408653a0e457874656e73696f6e7b063a06616900', 'hex'))).toEqual({
+        __class: 'Hash',
+        [Symbol.for('a')]: 0,
+        __extendedModules: [
+          {
+            __class: 'Module',
+            name: 'Extension',
+          },
+        ],
+      });
+    });
+
     it('loads standard object', () => {
       expect(load(Buffer.from('04086f3a10506f696e744f626a656374073a07407869093a074079690a', 'hex'))).toEqual({
         __class: Symbol.for('PointObject'),
@@ -115,6 +137,22 @@ describe('Marshal', () => {
         __type: 'Struct',
         x: 1,
         y: 2,
+      });
+    });
+
+    it('loads extended structs', () => {
+      expect(load(Buffer.from('040849653a0e457874656e73696f6e533a10506f696e74537472756374073a067869003a06796906063a07407a690a', 'hex'))).toEqual({
+        __class: Symbol.for('PointStruct'),
+        __type: 'Struct',
+        x: 0,
+        y: 1,
+        '@z': 5,
+        __extendedModules: [
+          {
+            __class: 'Module',
+            name: 'Extension',
+          },
+        ],
       });
     });
 
