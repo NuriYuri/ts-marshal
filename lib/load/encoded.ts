@@ -10,8 +10,8 @@ const discardEncoding = (context: MarshalContext) => {
   r_object(context);
 };
 
-const COMMON_ENCODING_SYMBOL = Symbol.for('E');
-const ENCODING_SYMBOL = Symbol.for('encoding');
+export const COMMON_ENCODING_SYMBOL = Symbol.for('E');
+export const ENCODING_SYMBOL = Symbol.for('encoding');
 
 const lookUpForEncoding = (context: MarshalContext): BufferEncoding | undefined => {
   const objectSize = context.objects;

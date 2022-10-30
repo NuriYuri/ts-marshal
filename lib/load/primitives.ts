@@ -11,7 +11,7 @@ export const marshalLoadFloat = (context: MarshalContext): number => {
   return Number(floatData);
 };
 
-export const marshalLoadBigNum = (context: MarshalContext): BigInt => {
+export const marshalLoadBigNum = (context: MarshalContext): bigint => {
   const sign = r_byte(context);
   const length = r_long(context);
   if (length < 0) throw new MarshalError(`Negative length are not allowed for buffer, given length: ${length}`);

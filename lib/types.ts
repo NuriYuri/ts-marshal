@@ -35,6 +35,11 @@ export type MarshalUserObject = {
   __encoding?: BufferEncoding;
 };
 
+export type MarshalDataObject = {
+  __class: symbol;
+  __load_data: unknown;
+};
+
 export type MarshalStructObject = {
   __class: symbol;
   __type: 'Struct';
@@ -42,3 +47,23 @@ export type MarshalStructObject = {
 } & Record<string, unknown>;
 
 export type MarshalExtendableObject = MarshalStructObject | MarshalHash | MarshalStandardObject;
+
+export type MarshalObject =
+  | null
+  | true
+  | false
+  | number
+  | symbol
+  | string
+  | bigint
+  | RegExp
+  | MarshalModuleOrClassObject
+  | MarshalClassObject
+  | MarshalModuleObject
+  | MarshalDataObject
+  | MarshalMarshalObject
+  | MarshalUserObject
+  | MarshalHash
+  | MarshalStructObject
+  | MarshalStandardObject
+  | MarshalObject[];

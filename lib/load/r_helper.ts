@@ -1,4 +1,5 @@
 import { MarshalError } from '../errors';
+import type { MarshalObject } from '../types';
 
 export type MarshalContext = {
   readonly buffer: Buffer;
@@ -6,7 +7,7 @@ export type MarshalContext = {
   symbols: symbol[];
   objects: unknown[];
   ivar: boolean;
-  marshalLoad: (context: MarshalContext) => unknown;
+  marshalLoad: (context: MarshalContext) => MarshalObject;
 };
 
 export const r_byte = (context: MarshalContext): number => {

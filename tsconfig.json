@@ -13,6 +13,7 @@
   "exclude": [
     "index.d.ts",
     "examples/**",
+    "marshal_consumer/**",
     "**/*.test.ts"
   ]
 }

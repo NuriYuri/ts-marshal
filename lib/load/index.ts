@@ -1,4 +1,5 @@
 import { MarshalError } from '../errors';
+import type { MarshalObject } from '../types';
 import { marshalLoadArray } from './array';
 import { marshalLoadUserDef, marshalLoadString, marshalLoadRegexp, marshalLoadSymbol } from './encoded';
 import { marshalLoadExtended } from './extended';
@@ -12,7 +13,7 @@ import { marshalLoadIvar } from './r_ivar';
 import { marshalLoadStruct } from './struct';
 import { marshalLoadUClass } from './uclass';
 
-const marshalLoad = (context: MarshalContext): unknown => {
+const marshalLoad = (context: MarshalContext): MarshalObject => {
   const type = r_byte(context);
   switch (type) {
     case 48: // TYPE_NIL '0'
@@ -70,7 +71,7 @@ const marshalLoad = (context: MarshalContext): unknown => {
   }
 };
 
-export const load = (buffer: Buffer): unknown => {
+export const load = (buffer: Buffer): MarshalObject => {
   if (!buffer || buffer.length < 3) throw new MarshalError('marshal data too short'); // Smallest Marshal buffer is of size 3
 
   // Check version
