@@ -4,11 +4,11 @@
     "module": "CommonJS",
     "outDir": "dist",
     "lib": [ "es2020", "ES2020.BigInt" ],
-    "target": "es2020",
+    "target": "ES5",
     "allowJs": false,
     "moduleResolution": "node",
     "sourceMap": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
   },
   "exclude": [
     "index.d.ts",
