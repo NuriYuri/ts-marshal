@@ -5,17 +5,19 @@ import { r_symbol, r_unique } from './r_symbol';
 import { r_object, withSubContext } from './withSubContext';
 
 const discardEncoding = (context: MarshalContext) => {
-  r_long(context);
-  r_symbol(context);
-  r_object(context);
+  const { map, ...discardingContext } = context;
+  r_long(discardingContext);
+  r_symbol(discardingContext);
+  r_object(discardingContext);
+  context.index = discardingContext.index;
 };
 
 export const COMMON_ENCODING_SYMBOL = Symbol.for('E');
 export const ENCODING_SYMBOL = Symbol.for('encoding');
 
 const lookUpForEncoding = (context: MarshalContext): BufferEncoding | undefined => {
-  const objectSize = context.objects;
-  const symbolSize = context.symbols;
+  const objectSize = context.objects.length;
+  const symbolSize = context.symbols.length;
   return withSubContext(context, false, (subContext) => {
     const num = r_long(subContext);
     if (num !== 1) throw new MarshalError('Invalid encoding description in IVAR');
@@ -23,9 +25,9 @@ const lookUpForEncoding = (context: MarshalContext): BufferEncoding | undefined 
     const symbol = r_symbol(subContext);
     const value = r_object(subContext);
     subContext.index = context.index;
-    if (objectSize !== context.objects) context.objects.pop();
-    if (symbolSize !== context.symbols) context.symbols.pop();
-    if (symbol === COMMON_ENCODING_SYMBOL) return value === true ? 'utf8' : 'binary';
+    if (objectSize !== context.objects.length) context.objects.pop();
+    if (symbolSize !== context.symbols.length) context.symbols.pop();
+    if (symbol === COMMON_ENCODING_SYMBOL) return value === true ? 'utf8' : 'ascii'; // Note: string uses this as ascii while regexp use it both for ascii and binary
     if (symbol !== ENCODING_SYMBOL) throw new MarshalError('Invalid encoding description in IVAR');
     if (typeof value !== 'string') throw new MarshalError('Expected string value in encoding description IVAR');
 

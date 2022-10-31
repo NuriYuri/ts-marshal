@@ -20,7 +20,9 @@ describe('Marshal', () => {
     it('dumps bignums', () => {
       expect(
         dump(
-          32317006071311007300714876688669951960444102669715484032130345427524655138867890893197201411522913463688717960921898019494119559150490921095088152386448283120630877367300996091750197750389652106796057638384067568276792218642619756161838094338476170470581645852036305042887575891541065808607552399123930385521914333389668342420684974786564569494856176035326322058077805659331026192708460314150258592864177116725943603718461857357598351152301645904403697613233287231227125684710820209725157101726931323469678542580656697935045997268352998638215525166389437335543602135433229604645318478604952148193555853611059596230656n,
+          BigInt(
+            '32317006071311007300714876688669951960444102669715484032130345427524655138867890893197201411522913463688717960921898019494119559150490921095088152386448283120630877367300996091750197750389652106796057638384067568276792218642619756161838094338476170470581645852036305042887575891541065808607552399123930385521914333389668342420684974786564569494856176035326322058077805659331026192708460314150258592864177116725943603718461857357598351152301645904403697613233287231227125684710820209725157101726931323469678542580656697935045997268352998638215525166389437335543602135433229604645318478604952148193555853611059596230656',
+          ),
         ),
       ).toEqual(
         Buffer.from(
@@ -123,6 +125,46 @@ describe('Marshal', () => {
       );
     });
 
+    it('dumps extended object made from JS world', () => {
+      const makePointObject = (x: number, y: number, z: number) => {
+        const pointObject = {
+          __class: Symbol.for('PointObject'),
+          __extendedModules: [
+            { __class: 'Module' as const, name: 'PrettyPrinter' },
+            { __class: 'Module' as const, name: 'Point3D' },
+          ],
+          get x() {
+            return this['@x'] as number;
+          },
+          set x(v: number) {
+            this['@x'] = v;
+          },
+          get y() {
+            return this['@y'] as number;
+          },
+          set y(v: number) {
+            this['@y'] = v;
+          },
+          get z() {
+            return this['@z'] as number;
+          },
+          set z(v: number) {
+            this['@z'] = v;
+          },
+        };
+        pointObject.x = x; // Written like this to prove setter works
+        pointObject.y = y;
+        pointObject.z = z;
+        return pointObject;
+      };
+      expect(dump(makePointObject(0, 0, 1))).toEqual(
+        Buffer.from(
+          '0408653a125072657474795072696e746572653a0c506f696e7433446f3a10506f696e744f626a656374083a07407869003a07407969003a07407a6906',
+          'hex',
+        ),
+      );
+    });
+
     it('dumps object with marshal_dump data', () => {
       expect(
         dump({
@@ -140,6 +182,20 @@ describe('Marshal', () => {
           __encoding: 'utf8',
         }),
       ).toEqual(Buffer.from('040849753a0f446174614f626a65637413536f6d6542696e61727944617461063a064554', 'hex'));
+    });
+
+    it('dumps object with _dump backed off instance variables', () => {
+      const object = {
+        __class: Symbol.for('DataObject'),
+        __encoding: 'utf8',
+        some: 'Some',
+        binary: 'Binary',
+        data: 'Data',
+        get __load() {
+          return Buffer.from(`${this.some}${this.binary}${this.data}`, 'utf8');
+        },
+      };
+      expect(dump(object)).toEqual(Buffer.from('040849753a0f446174614f626a65637413536f6d6542696e61727944617461063a064554', 'hex'));
     });
 
     it('dumps structs', () => {

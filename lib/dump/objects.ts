@@ -29,7 +29,7 @@ export const marshalDumpUsrMarshalObject = (context: MarshalDumpContext, object:
   context.marshalDump(context, object.__marshal_load);
 };
 
-const GENERIC_ENCODING: readonly BufferEncoding[] = ['utf8', 'utf-8', 'binary'] as const;
+const GENERIC_ENCODING: readonly BufferEncoding[] = ['utf8', 'utf-8', 'ascii'] as const;
 
 export const marshalDumpUserDefObject = (context: MarshalDumpContext, object: MarshalUserObject) => {
   w_remember(context, object);
@@ -41,7 +41,7 @@ export const marshalDumpUserDefObject = (context: MarshalDumpContext, object: Ma
   w_long(context, 1);
   if (GENERIC_ENCODING.includes(object.__encoding)) {
     marshalDumpSymbol(context, COMMON_ENCODING_SYMBOL);
-    return w_byte(context, object.__encoding === 'binary' ? 70 : 84);
+    return w_byte(context, object.__encoding === 'ascii' ? 70 : 84);
   }
 
   marshalDumpSymbol(context, ENCODING_SYMBOL);
@@ -118,9 +118,9 @@ export const marshalDumpStruct = (context: MarshalDumpContext, object: MarshalSt
 export const marshalDumpStandardObject = (context: MarshalDumpContext, object: MarshalStandardObject) => {
   w_remember(context, object);
   w_class(context, 111, object);
-  const keys = Object.keys(object).filter((key) => !key.startsWith('__'));
-  w_long(context, keys.length);
-  keys.forEach((key) => {
+  const ivar = Object.keys(object).filter((key) => key.startsWith('@'));
+  w_long(context, ivar.length);
+  ivar.forEach((key) => {
     marshalDumpSymbol(context, Symbol.for(key));
     context.marshalDump(context, object[key]);
   });

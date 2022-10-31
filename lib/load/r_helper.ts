@@ -8,6 +8,7 @@ export type MarshalContext = {
   objects: unknown[];
   ivar: boolean;
   marshalLoad: (context: MarshalContext) => MarshalObject;
+  map?: (object: MarshalObject) => MarshalObject;
 };
 
 export const r_byte = (context: MarshalContext): number => {
@@ -46,5 +47,11 @@ export const r_bytes = (context: MarshalContext): Buffer => {
 
 export const r_entry = <T>(context: MarshalContext, object: T): T => {
   context.objects.push(object);
+  return object;
+};
+
+export const r_leave = (context: MarshalContext, object: MarshalObject): MarshalObject => {
+  if (context.map) return context.map(object);
+
   return object;
 };
