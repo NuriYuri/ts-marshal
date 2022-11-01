@@ -1,6 +1,14 @@
 import { COMMON_ENCODING_SYMBOL, ENCODING_SYMBOL } from '../load/encoded';
 import { isMarshalExtendableObject } from '../typeGuards';
-import { MarshalDataObject, MarshalHash, MarshalMarshalObject, MarshalStandardObject, MarshalStructObject, MarshalUserObject } from '../types';
+import type {
+  MarshalDataObject,
+  MarshalHash,
+  MarshalMarshalObject,
+  MarshalObject,
+  MarshalStandardObject,
+  MarshalStructObject,
+  MarshalUserObject,
+} from '../types';
 import { marshalDumpObjectLink } from './link';
 import { MarshalDumpContext, w_byte, w_bytes, w_long, w_remember } from './r_helpers';
 import { marshalDumpString } from './strings';
@@ -83,14 +91,14 @@ export const marshalDumpHash = (context: MarshalDumpContext, object: MarshalHash
     } else {
       marshalDumpString(context, key);
     }
-    context.marshalDump(context, object[key]);
+    context.marshalDump(context, object[key] as MarshalObject);
   });
   if (object.__default) context.marshalDump(context, object.__default);
   if (ivar.length > 0) {
     w_long(context, ivar.length);
     ivar.forEach((key) => {
       marshalDumpSymbol(context, Symbol.for(key));
-      context.marshalDump(context, object[key]);
+      context.marshalDump(context, object[key] as MarshalObject);
     });
   }
 };
@@ -104,13 +112,13 @@ export const marshalDumpStruct = (context: MarshalDumpContext, object: MarshalSt
   w_long(context, keys.length);
   keys.forEach((key) => {
     marshalDumpSymbol(context, Symbol.for(key));
-    context.marshalDump(context, object[key]);
+    context.marshalDump(context, object[key] as MarshalObject);
   });
   if (ivar.length > 0) {
     w_long(context, ivar.length);
     ivar.forEach((key) => {
       marshalDumpSymbol(context, Symbol.for(key));
-      context.marshalDump(context, object[key]);
+      context.marshalDump(context, object[key] as MarshalObject);
     });
   }
 };
@@ -122,6 +130,6 @@ export const marshalDumpStandardObject = (context: MarshalDumpContext, object: M
   w_long(context, ivar.length);
   ivar.forEach((key) => {
     marshalDumpSymbol(context, Symbol.for(key));
-    context.marshalDump(context, object[key]);
+    context.marshalDump(context, object[key] as MarshalObject);
   });
 };

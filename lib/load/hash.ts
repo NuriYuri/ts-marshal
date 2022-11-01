@@ -10,10 +10,23 @@ export const marshalLoadHash = (context: MarshalContext): MarshalHash => {
   while (length--) {
     const key = r_object(context);
     const value = r_object(context);
-    if (typeof key !== 'string' && typeof key !== 'symbol') {
-      throw new MarshalError(`Cannot support non symbol or string key in Hashes in JS, received: ${typeof key}`);
+    switch (typeof key) {
+      case 'string':
+      case 'symbol':
+        hash[key] = value;
+        break;
+      case 'number':
+        hash[key.toString()] = value;
+        break;
+      case 'boolean':
+        hash[key ? 'true' : 'false'] = value;
+        break;
+      case 'object':
+        hash[key ? key.toString() : 'null'] = value;
+        break;
+      default:
+        throw new MarshalError(`Cannot support non symbol or string key in Hashes in JS, received: ${typeof key}`);
     }
-    hash[key] = value;
   }
   return hash;
 };

@@ -13,7 +13,7 @@ export const marshalLoadObject = (context: MarshalContext) => {
 
 export const marshalLoadData = (context: MarshalContext) => {
   const path = withSubContext(context, false, r_unique);
-  const object: MarshalDataObject = r_entry(context, { __class: path, __load_data: undefined });
+  const object: MarshalDataObject = r_entry(context, { __class: path, __load_data: null });
   // Ruby calls _load_data with r so we'll extend the object itself with __load_data: r
   object.__load_data = r_object(context);
   return object;

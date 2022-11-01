@@ -1,9 +1,11 @@
+import type { MarshalObject } from '../types';
+
 export type MarshalDumpContext = {
   buffer: Buffer;
   length: number;
   objects: unknown[];
   symbols: symbol[];
-  marshalDump: (context: MarshalDumpContext, object: unknown) => void;
+  marshalDump: (context: MarshalDumpContext, object: MarshalObject) => void;
 };
 
 export const expandBuffer = (context: MarshalDumpContext, needed: number) => {

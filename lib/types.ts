@@ -15,7 +15,7 @@ export type MarshalModuleOrClassObject = {
 
 export type MarshalHash = {
   __class: 'Hash';
-  __default?: unknown;
+  __default?: MarshalObject;
   __extendedModules?: MarshalModuleObject[];
 } & Record<string | symbol, unknown>;
 
@@ -26,7 +26,7 @@ export type MarshalStandardObject = {
 
 export type MarshalMarshalObject = {
   __class: symbol;
-  __marshal_load: unknown;
+  __marshal_load: MarshalObject;
 };
 
 export type MarshalUserObject = {
@@ -37,7 +37,7 @@ export type MarshalUserObject = {
 
 export type MarshalDataObject = {
   __class: symbol;
-  __load_data: unknown;
+  __load_data: MarshalObject;
 };
 
 export type MarshalStructObject = {

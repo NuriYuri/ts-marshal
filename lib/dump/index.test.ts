@@ -1,4 +1,5 @@
 import { dump } from '.';
+import { MarshalStandardObject } from '../types';
 
 // str.each_char.each_slice(2).map { |s| s.join.to_i(16).chr }.join
 describe('Marshal', () => {
@@ -126,27 +127,38 @@ describe('Marshal', () => {
     });
 
     it('dumps extended object made from JS world', () => {
+      type JSPointObject = MarshalStandardObject & {
+        '@x': number;
+        '@y': number;
+        '@z': number;
+        x: number;
+        y: number;
+        z: number;
+      };
       const makePointObject = (x: number, y: number, z: number) => {
-        const pointObject = {
+        const pointObject: JSPointObject = {
           __class: Symbol.for('PointObject'),
           __extendedModules: [
             { __class: 'Module' as const, name: 'PrettyPrinter' },
             { __class: 'Module' as const, name: 'Point3D' },
           ],
+          '@x': -1,
+          '@y': -1,
+          '@z': -1,
           get x() {
-            return this['@x'] as number;
+            return this['@x'];
           },
           set x(v: number) {
             this['@x'] = v;
           },
           get y() {
-            return this['@y'] as number;
+            return this['@y'];
           },
           set y(v: number) {
             this['@y'] = v;
           },
           get z() {
-            return this['@z'] as number;
+            return this['@z'];
           },
           set z(v: number) {
             this['@z'] = v;
