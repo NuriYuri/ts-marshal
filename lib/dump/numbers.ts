@@ -24,7 +24,7 @@ export const marshalDumpBigNum = (context: MarshalDumpContext, object: number | 
 const marshalDumpFloat = (context: MarshalDumpContext, object: number) => {
   w_remember(context, object);
   w_byte(context, 102);
-  if (object === NaN) return w_bytes(context, Buffer.from('nan'));
+  if (Number.isNaN(object)) return w_bytes(context, Buffer.from('nan'));
   if (object === -Infinity) return w_bytes(context, Buffer.from('-inf'));
   if (object === Infinity) return w_bytes(context, Buffer.from('inf'));
   w_bytes(context, Buffer.from(object.toString()));

@@ -14,7 +14,7 @@ describe('Marshal', () => {
 
     it('dumps floats', () => {
       expect(dump([1.5, -500.3, NaN, Infinity, -Infinity])).toEqual(
-        Buffer.from('04085b0a6608312e35660b2d3530302e3366084e614e6608696e6666092d696e66', 'hex'),
+        Buffer.from('04085b0a6608312e35660b2d3530302e3366086e616e6608696e6666092d696e66', 'hex'),
       );
     });
 
