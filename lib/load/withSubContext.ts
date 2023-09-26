@@ -7,6 +7,6 @@ export const withSubContext = <T>(context: MarshalContext, ivar: boolean, action
   return object;
 };
 
-export const r_object = (context: MarshalContext, ivar = false) => {
+export const r_object = (context: MarshalContext, ivar = false) :any=> {
   return withSubContext(context, ivar, context.marshalLoad);
 };

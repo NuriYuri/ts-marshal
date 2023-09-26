@@ -9,7 +9,7 @@ const marshalDumpFixnum = (context: MarshalDumpContext, object: number) => {
 export const marshalDumpBigNum = (context: MarshalDumpContext, object: number | BigInt) => {
   if (typeof object !== 'number') w_remember(context, object);
   w_byte(context, 108);
-  w_byte(context, object < 0 ? 45 : 43);
+  w_byte(context, Number(object) < 0 ? 45 : 43);
   const hex = object.toString(16);
   const newBuffer = Buffer.from((hex.length & 1) === 1 ? `0${hex}` : hex, 'hex').reverse();
   const mustAppendZero = (newBuffer.length & 1) === 1;
