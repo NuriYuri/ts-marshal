@@ -2,7 +2,7 @@
   "bin": "dist/index.js",
   "main": "dist/index.js",
   "name": "ts-marshal",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Typescript library to deserialize Ruby Marshal-i-zed objects",
   "author": {
     "email": "dont-email@communityscriptproject.com",
@@ -15,7 +15,13 @@
     "build": "tsc",
     "test": "jest"
   },
-  "keywords": ["ruby", "marshal", "dump", "load", "typescript"],
+  "keywords": [
+    "ruby",
+    "marshal",
+    "dump",
+    "load",
+    "typescript"
+  ],
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^28.1.1",
