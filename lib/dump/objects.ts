@@ -1,5 +1,5 @@
 import { COMMON_ENCODING_SYMBOL, ENCODING_SYMBOL } from '../load/encoded';
-import { isMarshalExtendableObject } from '../typeGuards';
+import { isMarshalExtendableObject, isMarshalModuleObject, isMarshalModuleOrClassObject } from '../typeGuards';
 import type {
   MarshalDataObject,
   MarshalHash,
@@ -99,6 +99,38 @@ export const marshalDumpHash = (context: MarshalDumpContext, object: MarshalHash
     ivar.forEach((key) => {
       marshalDumpSymbol(context, Symbol.for(key));
       context.marshalDump(context, object[key] as MarshalObject);
+    });
+  }
+};
+
+export const marshalDumpMap = (context: MarshalDumpContext, object: Map<MarshalObject, MarshalObject>) => {
+  w_remember(context, object);
+  const objectKeys = Array.from(object.keys());
+  const ivar = objectKeys.filter((key): key is string => typeof key === 'string' && key.startsWith('@'));
+  const keys = objectKeys.filter((key) => typeof key !== 'string' || (!key.startsWith('__') && !key.startsWith('@')));
+  const defaultValue = object.get('__default');
+  const extendedModules = object.get('__extendedModules');
+  if (ivar.length > 0) w_byte(context, 73);
+  if (Array.isArray(extendedModules)) {
+    extendedModules.forEach((module) => {
+      if (!isMarshalModuleObject(module)) return;
+
+      w_byte(context, 101);
+      marshalDumpSymbol(context, Symbol.for(module.name));
+    });
+  }
+  w_byte(context, defaultValue !== undefined ? 125 : 123);
+  w_long(context, keys.length);
+  keys.forEach((key) => {
+    context.marshalDump(context, key);
+    context.marshalDump(context, object.get(key)!); // hash key comes from object.keys()
+  });
+  if (defaultValue) context.marshalDump(context, defaultValue);
+  if (ivar.length > 0) {
+    w_long(context, ivar.length);
+    ivar.forEach((key) => {
+      marshalDumpSymbol(context, Symbol.for(key));
+      context.marshalDump(context, object.get(key)!); // ivar key comes from object.keys()
     });
   }
 };

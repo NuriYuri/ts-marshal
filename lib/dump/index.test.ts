@@ -1,5 +1,5 @@
 import { dump } from '.';
-import { MarshalStandardObject } from '../types';
+import { MarshalObject, MarshalStandardObject } from '../types';
 
 // str.each_char.each_slice(2).map { |s| s.join.to_i(16).chr }.join
 describe('Marshal', () => {
@@ -94,6 +94,57 @@ describe('Marshal', () => {
           ],
         }),
       ).toEqual(Buffer.from('0408653a0e457874656e73696f6e7b063a06616900', 'hex'));
+    });
+
+    it('dumps hashes from Maps', () => {
+      const map = new Map<MarshalObject, MarshalObject>([
+        ['b', 1],
+        [Symbol.for('a'), 0],
+      ]);
+      expect(dump(map)).toEqual(Buffer.from('04087b0749220662063a06455469063a06616900', 'hex'));
+    });
+
+    it('dumps hashes from Maps with default value', () => {
+      const map = new Map<MarshalObject, MarshalObject>([
+        ['b', 1],
+        ['__default', 55],
+        [Symbol.for('a'), 0],
+      ]);
+      expect(dump(map)).toEqual(Buffer.from('04087d0749220662063a06455469063a06616900693c', 'hex'));
+    });
+
+    it('dumps hashes from Maps with instance variables', () => {
+      const map = new Map<MarshalObject, MarshalObject>([
+        ['b', 1],
+        ['@a', 5],
+        [Symbol.for('a'), 0],
+      ]);
+      expect(dump(map)).toEqual(Buffer.from('0408497b0749220662063a06455469063a06616900063a074061690a', 'hex'));
+    });
+
+    it('dumps extended hashes from Maps', () => {
+      const map = new Map<MarshalObject, MarshalObject>([
+        [
+          '__extendedModules',
+          [
+            {
+              __class: 'Module',
+              name: 'Extension',
+            },
+          ],
+        ],
+        [Symbol.for('a'), 0],
+      ]);
+      expect(dump(map)).toEqual(Buffer.from('0408653a0e457874656e73696f6e7b063a06616900', 'hex'));
+    });
+
+    it('dumps any keys with hash from Maps', () => {
+      const map = new Map<MarshalObject, MarshalObject>([
+        [null, 0],
+        [1, 3],
+        [new Map<MarshalObject, MarshalObject>([]), 4],
+      ]);
+      expect(dump(map)).toEqual(Buffer.from('04087b08306900690669087b006909', 'hex'));
     });
 
     it('dumps standard object', () => {

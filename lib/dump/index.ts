@@ -18,6 +18,7 @@ import { marshalDumpBigNum, marshalDumpNumber } from './numbers';
 import {
   marshalDumpDataObject,
   marshalDumpHash,
+  marshalDumpMap,
   marshalDumpStandardObject,
   marshalDumpStruct,
   marshalDumpUserDefObject,
@@ -37,6 +38,7 @@ const marshalDump = (context: MarshalDumpContext, object: MarshalObject) => {
   if (context.objects.includes(object)) return marshalDumpObjectLink(context, object);
   if (typeof object === 'bigint') return marshalDumpBigNum(context, object);
   if (typeof object === 'string') return marshalDumpString(context, object);
+  if (object instanceof Map) return marshalDumpMap(context, object);
   if (object instanceof RegExp) return marshalDumpRegexp(context, object);
   if (Array.isArray(object)) return marshalDumpArray(context, object);
   if (isMarshalModuleOrClassObject(object)) return marshalDumpModuleOld(context, object);

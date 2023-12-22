@@ -66,4 +66,5 @@ export type MarshalObject =
   | MarshalHash
   | MarshalStructObject
   | MarshalStandardObject
-  | MarshalObject[];
+  | MarshalObject[]
+  | Map<MarshalObject, MarshalObject>;
