@@ -2,7 +2,7 @@
   "bin": "dist/index.js",
   "main": "dist/index.js",
   "name": "ts-marshal",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "Typescript library to deserialize Ruby Marshal-i-zed objects",
   "author": {
     "email": "dont-email@communityscriptproject.com",
@@ -12,7 +12,7 @@
     "url": "https://github.com/NuriYuri/ts-marshal"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -d",
     "test": "jest"
   },
   "keywords": [
@@ -35,16 +35,12 @@
   },
   "files": [
     "index.d.ts",
-    "dist/lib/*.d.ts",
-    "dist/lib/*.js",
-    "dist/lib/*.js.map",
-    "dist/lib/**/*.d.ts",
-    "dist/lib/**/*.js",
-    "dist/lib/**/*.js.map",
     "dist/*.js",
     "dist/*.js.map",
+    "dist/*.d.ts",
     "dist/**/*.js",
     "dist/**/*.js.map",
+    "dist/**/*.d.ts",
     "lib/**/*",
     "tsconfig.json"
   ]
