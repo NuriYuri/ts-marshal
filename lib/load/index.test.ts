@@ -1,5 +1,6 @@
 import { load } from '.';
 import { isMarshalExtendableObject } from '../typeGuards';
+import { MarshalObject } from '../types';
 
 // Marshal.dump().each_byte.map { |i| sprintf('%02x', i) }.join
 describe('Marshal', () => {
@@ -90,6 +91,52 @@ describe('Marshal', () => {
           },
         ],
       });
+    });
+
+    it('loads hashes as Map', () => {
+      expect(load(Buffer.from('04087b073a0661690049220662063a0645546906', 'hex'), undefined, { hashToJS: 'map' })).toEqual(
+        new Map<MarshalObject, MarshalObject>([
+          [Symbol.for('a'), 0],
+          ['b', 1],
+        ]),
+      );
+    });
+
+    it('loads hashes as Map with default value as', () => {
+      expect(load(Buffer.from('04087d073a0661690049220662063a0645546906693c', 'hex'), undefined, { hashToJS: 'map' })).toEqual(
+        new Map<MarshalObject, MarshalObject>([
+          ['__default', 55],
+          [Symbol.for('a'), 0],
+          ['b', 1],
+        ]),
+      );
+    });
+
+    it('loads hashes as Map with instance variables', () => {
+      expect(load(Buffer.from('0408497b073a0661690049220662063a0645546906063a074061690a', 'hex'), undefined, { hashToJS: 'map' })).toEqual(
+        new Map<MarshalObject, MarshalObject>([
+          [Symbol.for('a'), 0],
+          ['b', 1],
+          ['@a', 5],
+        ]),
+      );
+    });
+
+    it('loads extended hashes as Map', () => {
+      expect(load(Buffer.from('0408653a0e457874656e73696f6e7b063a06616900', 'hex'), undefined, { hashToJS: 'map' })).toEqual(
+        new Map<MarshalObject, MarshalObject>([
+          [Symbol.for('a'), 0],
+          [
+            '__extendedModules',
+            [
+              {
+                __class: 'Module',
+                name: 'Extension',
+              },
+            ],
+          ],
+        ]),
+      );
     });
 
     it('loads standard object', () => {

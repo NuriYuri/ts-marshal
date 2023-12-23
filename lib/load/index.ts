@@ -1,3 +1,4 @@
+import { MarshalLoadConfig, mergeConfig } from '../config';
 import { MarshalError } from '../errors';
 import type { MarshalObject } from '../types';
 import { marshalLoadArray } from './array';
@@ -71,7 +72,7 @@ const marshalLoad = (context: MarshalContext): MarshalObject => {
   }
 };
 
-export const load = (buffer: Buffer, map?: MarshalContext['map']): MarshalObject => {
+export const load = (buffer: Buffer, map?: MarshalContext['map'], config?: MarshalLoadConfig): MarshalObject => {
   if (!buffer || buffer.length < 3) throw new MarshalError('marshal data too short'); // Smallest Marshal buffer is of size 3
 
   // Check version
@@ -79,6 +80,15 @@ export const load = (buffer: Buffer, map?: MarshalContext['map']): MarshalObject
   const minor = buffer.readUInt8(1);
   if (major !== 4 && minor !== 8) throw new MarshalError(`format version 4.8 required; ${major}.${minor} given`);
 
-  const context: MarshalContext = { buffer, index: 2, symbols: [], objects: [], ivar: false, marshalLoad, map };
+  const context: MarshalContext = {
+    buffer,
+    index: 2,
+    symbols: [],
+    objects: [],
+    ivar: false,
+    marshalLoad,
+    map,
+    config: mergeConfig({ load: config }),
+  };
   return marshalLoad(context);
 };

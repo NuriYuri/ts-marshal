@@ -1,3 +1,4 @@
+import { MarshalConfig } from '../config';
 import { MarshalError } from '../errors';
 import type { MarshalObject } from '../types';
 
@@ -9,6 +10,7 @@ export type MarshalContext = {
   ivar: boolean;
   marshalLoad: (context: MarshalContext) => MarshalObject;
   map?: (object: MarshalObject) => MarshalObject;
+  config: MarshalConfig;
 };
 
 export const r_byte = (context: MarshalContext): number => {

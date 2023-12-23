@@ -1,4 +1,5 @@
 import { dump } from '.';
+import { load } from '../load';
 import { MarshalObject, MarshalStandardObject } from '../types';
 
 // str.each_char.each_slice(2).map { |s| s.join.to_i(16).chr }.join
@@ -10,6 +11,15 @@ describe('Marshal', () => {
 
     it('dumps strings', () => {
       expect(dump(['test', 'tést'])).toEqual(Buffer.from('04085b0749220974657374063a06455449220a74c3a97374063b0054', 'hex'));
+    });
+
+    it('dumps string and symbol without encoding (RMXP) with no issue', () => {
+      // It's a RMXP shit issue, I don't have time to convince Ruby to make me an example buffer without encoding tag
+      expect(load(dump(['tést', 'test', Symbol.for('tést')], { omitStringEncoding: true }))).toEqual(['tést', 'test', Symbol.for('tést')]);
+      expect(dump(['tést', 'test', Symbol.for('tést')], { omitStringEncoding: true })).toEqual(
+        dump(['tést', 'test', Symbol.for('tést')], { omitStringEncoding: true }),
+      );
+      expect(dump(['tést', 'test', Symbol.for('tést')], { omitStringEncoding: true })).not.toEqual(dump(['tést', 'test', Symbol.for('tést')]));
     });
 
     it('dumps floats', () => {

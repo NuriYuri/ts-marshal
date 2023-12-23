@@ -1,3 +1,4 @@
+import { MarshalConfig } from '../config';
 import type { MarshalObject } from '../types';
 
 export type MarshalDumpContext = {
@@ -6,6 +7,7 @@ export type MarshalDumpContext = {
   objects: unknown[];
   symbols: symbol[];
   marshalDump: (context: MarshalDumpContext, object: MarshalObject) => void;
+  config: MarshalConfig;
 };
 
 export const expandBuffer = (context: MarshalDumpContext, needed: number) => {

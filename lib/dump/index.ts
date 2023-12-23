@@ -28,6 +28,7 @@ import { marshalDumpRegexp } from './regexp';
 import { MarshalDumpContext, w_byte } from './r_helpers';
 import { marshalDumpString } from './strings';
 import { marshalDumpSymbol } from './symbol';
+import { MarshalDumpConfig, mergeConfig } from '../config';
 
 const marshalDump = (context: MarshalDumpContext, object: MarshalObject) => {
   if (object === null) return w_byte(context, 48);
@@ -53,7 +54,7 @@ const marshalDump = (context: MarshalDumpContext, object: MarshalObject) => {
   throw new MarshalError(`Cannot dump ${object}`);
 };
 
-export const dump = (object: MarshalObject): Buffer => {
+export const dump = (object: MarshalObject, config?: MarshalDumpConfig): Buffer => {
   const buffer = Buffer.allocUnsafe(64);
   const context: MarshalDumpContext = {
     buffer,
@@ -61,6 +62,7 @@ export const dump = (object: MarshalObject): Buffer => {
     objects: [],
     symbols: [],
     marshalDump,
+    config: mergeConfig({ dump: config }),
   };
 
   w_byte(context, 4);

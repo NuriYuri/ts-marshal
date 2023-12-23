@@ -2,7 +2,7 @@
   "bin": "dist/index.js",
   "main": "dist/index.js",
   "name": "ts-marshal",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Typescript library to deserialize Ruby Marshal-i-zed objects",
   "author": {
     "email": "dont-email@communityscriptproject.com",

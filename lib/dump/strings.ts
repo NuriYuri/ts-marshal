@@ -9,6 +9,10 @@ const w_string = (context: MarshalDumpContext, object: string) => {
 
 export const marshalDumpString = (context: MarshalDumpContext, object: string) => {
   w_remember(context, object);
+  if (context.config.dump.omitStringEncoding) {
+    w_string(context, object);
+    return;
+  }
   // Add IVAR to specify it contains UTF-8 chars
   w_byte(context, 73);
   w_string(context, object);

@@ -14,6 +14,10 @@ export const marshalDumpSymbol = (context: MarshalDumpContext, object: symbol) =
   const name = Symbol.keyFor(object);
   if (!name) throw new MarshalError(`${object.toString()} is unknown to the JS realm.`);
   if (name.match(/^[a-z0-9_@]+$/i) !== null) return w_symbol(context, name);
+  if (context.config.dump.omitStringEncoding) {
+    w_symbol(context, name);
+    return;
+  }
   // Add IVAR to specify it contains UTF-8 chars
   w_byte(context, 73);
   w_symbol(context, name);

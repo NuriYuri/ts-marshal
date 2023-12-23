@@ -1,11 +1,19 @@
 import { MarshalError } from '../errors';
-import type { MarshalHash } from '../types';
+import type { MarshalHash, MarshalObject } from '../types';
 import { MarshalContext, r_long, r_entry } from './r_helper';
 import { r_object } from './withSubContext';
 
-export const marshalLoadHash = (context: MarshalContext): MarshalHash => {
-  let length = r_long(context);
-  if (length < 0) throw new MarshalError(`Negative length are not allowed for hashes, given length: ${length}`);
+const marshalLoadHashAsMap = (context: MarshalContext, length: number) => {
+  const hash: Map<MarshalObject, MarshalObject> = r_entry(context, new Map());
+  while (length--) {
+    const key = r_object(context);
+    const value = r_object(context);
+    hash.set(key, value);
+  }
+  return hash;
+};
+
+const marshalLoadHashAsObject = (context: MarshalContext, length: number) => {
   const hash: MarshalHash = r_entry(context, { __class: 'Hash' });
   while (length--) {
     const key = r_object(context);
@@ -31,8 +39,22 @@ export const marshalLoadHash = (context: MarshalContext): MarshalHash => {
   return hash;
 };
 
+export const marshalLoadHash = (context: MarshalContext): MarshalHash | Map<MarshalObject, MarshalObject> => {
+  let length = r_long(context);
+  if (length < 0) throw new MarshalError(`Negative length are not allowed for hashes, given length: ${length}`);
+  if (context.config.load.hashToJS === 'map') {
+    return marshalLoadHashAsMap(context, length);
+  } else {
+    return marshalLoadHashAsObject(context, length);
+  }
+};
+
 export const marshalLoadHashDef = (context: MarshalContext) => {
   const hash = marshalLoadHash(context);
-  hash.__default = r_object(context);
+  if (hash instanceof Map) {
+    hash.set('__default', r_object(context));
+  } else {
+    hash.__default = r_object(context);
+  }
   return hash;
 };

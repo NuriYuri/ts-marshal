@@ -21,7 +21,11 @@ export const marshalLoadExtended = (context: MarshalContext, extMod: ReturnType<
     // TODO: use guard clause for typed objects
     // Note: in JS we can't extend strings, floats, bigInt etc... with modules
     if (typeof object === 'object' && object != null) {
-      (object as Record<string, unknown>).__extendedModules = extMod;
+      if (object instanceof Map) {
+        object.set('__extendedModules', extMod);
+      } else {
+        (object as Record<string, unknown>).__extendedModules = extMod;
+      }
     }
     return object;
   }
